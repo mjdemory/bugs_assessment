@@ -1,14 +1,61 @@
+<a href="/"><input class="homeButton" type="submit" value="Homepage"></a>
+<a href="/createticket/"><input class="createTicket" type="submit" value="Create Ticket"></a>
+
+
+
 <h1>Homepage</h1>
-{{ display }}
 {% if request.user.is_authenticated %}
-    <h2>Welcome, {{ request.user.username }}, Real Name: {{ request.user.displayname }}!</h2>
+    <h2>Welcome, {{ request.user.username }}!</h2>
     <p>
-        <a href="/logout/"><button>Logout</button></a>
+        <a href="/logout/"><Button>Logout</Button></a>
     </p>
 {% else %}
     <h2>Not Welcome!</h2>
     <p>
-        <a href="/signup/"><Button>Signup</Button></a>
         <a href="/login/"><Button>Login</Button></a>
     </p>
 {% endif %}
+
+<div>
+    <h1>New Ticket</h1>
+     {% for ticket in my_ticket reversed %}
+        <ol>
+            <li>
+           {% if ticket.ticket_status == 'N' %}
+            <a href="/ticketdetail/{{ ticket_id }}/">{{ ticket.title }}</a>
+            Reported by: <a href="/userdetail/{{ ticket.user.id }}">{{ ticket.user }}</a>
+            {% endif %}
+            </li>
+        </ol>
+    {% endfor %}
+</div>
+<br>
+<div>
+    <h1>Ticket In Progress</h1>
+     {% for ticket in my_tickiet reversed %}
+        <ol>
+            <li>
+           {% if ticket.ticket_status == 'INP'%}
+            <a href="/ticketdetail/{{ ticket_id }}/">{{ ticket.title }}</a>
+               Assigned To: <a href="/userdetail/{{ ticket.user.id }}">{{ ticket.user }}</a>
+           <br>
+           Reported by: <a href="/userdetail/{{ ticket.user.id }}">{{ ticket.user }}</a>
+            {% endif %}
+            </li>
+        </ol>
+    {% endfor %}
+</div>
+<br>
+<div>
+    <h1>Completed Ticket</h1>
+     {% for ticket in my_ticket reversed %}
+        <ol>
+            <li>
+           {% if ticket.ticket_status == 'D'%}
+            <a href="/ticketdetail/{{ ticket_id }}/">{{ ticket.title }}</a>
+            Reported by: <a href="/userdetail/{{ ticket.user.id }}">{{ ticket.user }}</a>
+            {% endif %}
+            </li>
+        </ol>
+    {% endfor %}
+</div>
