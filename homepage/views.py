@@ -9,10 +9,15 @@ from homepage.models import Ticket
 from homepage.forms import TicketForm
 
 
+@login_required
 def index(request):
     html = "index.html"
-    my_ticket = Ticket.objects.all()
-    return render(request, html, {'New': my_ticket, "welcome_name": 'Box'})
+    new_tickets = Ticket.objects.filter(ticket_status='N')
+    in_progress_tickets= Ticket.objects.filter(ticket_status='INP')
+    completed_tickets = Ticket.objects.filter(ticket_status='D')
+    invalid_tickets = Ticket.objects.filter(ticket_status='INV')
+    return render(request, html, {'New': new_tickets, 'In_Progress': in_progress_tickets,
+    'Completed': completed_tickets, 'Invalid': invalid_tickets, "welcome_name": 'Box'})
 
 
 def ticket_detail_view(request, ticket_id):
@@ -30,8 +35,9 @@ def create_ticket_view_form(request):
             Ticket.objects.create(
                 title=data.get('title'),
                 description=data.get('description'),
+                user_filed=request.user
             )
-            return HttpResponseRedirect(reverse("ticket_detail"))
+            return HttpResponseRedirect(reverse("homepage"))
 
     form = TicketForm()
     return render(request, "basic.html", {"form": form})
@@ -48,7 +54,7 @@ def ticket_edit_view(request, ticket_id):
             ticket.title = data["title"]
             ticket.save()
 
-            return HttpResponseRedirect(reverse('ticket_detail_view', args=[ticket.id]))
+            return HttpResponseRedirect(reverse('ticket_detail', args=[ticket.id]))
 
     data = {
         "title": ticket.title,
@@ -59,34 +65,38 @@ def ticket_edit_view(request, ticket_id):
 
 
 def in_progress_ticket_view(request, ticket_id):
-    inprogress_ticket = Ticket.objects.filter(id=ticket_id)
-    inprogress_ticket.status = 'INP'
+    inprogress_ticket = Ticket.objects.filter(id=ticket_id).first()
+    inprogress_ticket.ticket_status = 'INP'
     inprogress_ticket.user_assigned = request.user
     inprogress_ticket.save()
 
-    return HttpResponseRedirect(reverse('ticket_detail_view', args=[inprogress_ticket.id]))
+    return HttpResponseRedirect(reverse('ticket_detail', args=[inprogress_ticket.id]))
 
 
 def completed_ticket_view(request, ticket_id):
-    completed_ticket = Ticket.objects.filter(id=ticket_id)
-    completed_ticket.status = 'D'
-    completed_ticket.user_completed = request.user
+    completed_ticket = Ticket.objects.filter(id=ticket_id).first()
+    completed_ticket.ticket_status = 'D'
+    completed_ticket.user_completed = completed_ticket.user_assigned
+    completed_ticket.user_assigned = None
     completed_ticket.save()
 
-    return HttpResponseRedirect(reverse('ticket_detail_view', args=[completed_ticket.id]))
+    return HttpResponseRedirect(reverse('ticket_detail', args=[completed_ticket.id]))
 
 
 def invalid_ticket_view(request, ticket_id):
-    invalid_ticket = Ticket.objects.filter(id=ticket_id)
-    invalid_ticket.status = 'INV'
-    invalid_ticket.user_completed = request.user
+    invalid_ticket = Ticket.objects.filter(id=ticket_id).first()
+    invalid_ticket.ticket_status = 'INV'
+    invalid_ticket.user_completed = None
+    invalid_ticket.user_assigned = None
     invalid_ticket.save()
 
-    return HttpResponseRedirect(reverse('ticket_detail_view', args=[invalid_ticket.id]))
+    return HttpResponseRedirect(reverse('ticket_detail', args=[invalid_ticket.id]))
 
 
 def user_detail_view(request, ticket_id):
     html = "user_detail.html"
     my_user = MyUser.objects.filter(id=ticket_id).first()
-    my_tickets = Ticket.objects.filter(user=my_user.id)
-    return render(request, html, {"user": my_user, "ticket": my_tickets})
+    filed_tickets = Ticket.objects.filter(user_filed=my_user)
+    in_progress = Ticket.objects.filter(user_assigned=my_user)
+    completed = Ticket.objects.filter(user_completed=my_user)
+    return render(request, html, {"filed": filed_tickets, "in_progress": in_progress, "completed": completed})

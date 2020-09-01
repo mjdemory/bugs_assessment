@@ -1,61 +1,67 @@
 <a href="/"><input class="homeButton" type="submit" value="Homepage"></a>
-<a href="/createticket/"><input class="createTicket" type="submit" value="Create Ticket"></a>
+<a href="/create_ticket_view/"><input class="createTicket" type="submit" value="Create Ticket"></a>
 
 
 
 <h1>Homepage</h1>
-{% if request.user.is_authenticated %}
     <h2>Welcome, {{ request.user.username }}!</h2>
     <p>
         <a href="/logout/"><Button>Logout</Button></a>
-    </p>
-{% else %}
-    <h2>Not Welcome!</h2>
-    <p>
+
         <a href="/login/"><Button>Login</Button></a>
     </p>
-{% endif %}
 
 <div>
     <h1>New Ticket</h1>
-     {% for ticket in my_ticket reversed %}
-        <ol>
-            <li>
-           {% if ticket.ticket_status == 'N' %}
-            <a href="/ticketdetail/{{ ticket_id }}/">{{ ticket.title }}</a>
-            Reported by: <a href="/userdetail/{{ ticket.user.id }}">{{ ticket.user }}</a>
-            {% endif %}
-            </li>
-        </ol>
+     {% for ticket in New reversed %}
+           <ul>
+               <li>
+                <a href="/ticket_detail_view/{{ ticket.id }}/">{{ ticket.title }}</a>
+                Reported by: <a href="/user_detail_view/{{ ticket.user_filed.id }}">{{ ticket.user_filed }}</a>
+               </li>
+           </ul>
     {% endfor %}
 </div>
 <br>
 <div>
     <h1>Ticket In Progress</h1>
-     {% for ticket in my_tickiet reversed %}
-        <ol>
+     {% for ticket in In_Progress reversed %}
+        <ul>
             <li>
-           {% if ticket.ticket_status == 'INP'%}
-            <a href="/ticketdetail/{{ ticket_id }}/">{{ ticket.title }}</a>
-               Assigned To: <a href="/userdetail/{{ ticket.user.id }}">{{ ticket.user }}</a>
-           <br>
-           Reported by: <a href="/userdetail/{{ ticket.user.id }}">{{ ticket.user }}</a>
-            {% endif %}
+                Title: <a href="/in_progress_ticket_view/{{ ticket.id }}/">{{ ticket.title }}</a>
+                <br>
+                Assigned To: <a href="/user_detail_view/{{ ticket.user_assigned.id }}">{{ ticket.user_assigned }}</a>
+               <br>
+                Reported by: <a href="/user_detail_view/{{ ticket.user_filed.id }}">{{ ticket.user_filed }}</a>
             </li>
-        </ol>
+        </ul>
     {% endfor %}
 </div>
 <br>
 <div>
     <h1>Completed Ticket</h1>
-     {% for ticket in my_ticket reversed %}
-        <ol>
+     {% for ticket in Completed reversed %}
+        <ul>
             <li>
-           {% if ticket.ticket_status == 'D'%}
-            <a href="/ticketdetail/{{ ticket_id }}/">{{ ticket.title }}</a>
-            Reported by: <a href="/userdetail/{{ ticket.user.id }}">{{ ticket.user }}</a>
-            {% endif %}
+            Title: <a href="/completed_ticket_view/{{ ticket.id }}/">{{ ticket.title }}</a>
+            <br>
+            Completed By: <a href="/user_detail_view/{{ ticket.user_completed.id }}">{{ ticket.user_completed }}</a>
+            Reported by: <a href="/user_detail_view/{{ ticket.user_filed.id }}">{{ ticket.user_filed }}</a>
             </li>
-        </ol>
+        </ul>
+    {% endfor %}
+</div>
+<br>
+<div>
+    <h1>Invalid Ticket</h1>
+     {% for ticket in Invalid reversed %}
+        <ul>
+            <li>
+            Title: <a href="/invalid_ticket_view/{{ ticket.id }}/">{{ ticket.title }}</a>
+            <br>
+            Completed By: <a href="/user_detail_view/{{ ticket.user_completed.id }}">{{ ticket.user_completed }}</a>
+            Reported by: <a href="/user_detail_view/{{ ticket.user_competed.id }}">{{ ticket.user_completed }}</a>
+            </li>
+        </ul>
     {% endfor %}
 </div>

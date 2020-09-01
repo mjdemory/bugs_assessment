@@ -1,21 +1,21 @@
 <a href="/"><input class="homeButton" type="submit" value="Homepage"></a>
 
-<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Dropdown button
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <a class="dropdown-item" href="/ticket/{{ ticket.id }}/edit/">Edit</a>
-    <a class="dropdown-item" href="/inprogressticket/{{ ticket.id }}/">Assign Ticket to You</a>
-    <a class="dropdown-item" href="/comppletedticket/{{ ticket.id }}">Completed Ticket</a>
-    <a class="dropdown-item" href="/invalidticket/{{ ticket.id }}/">Invalid Ticket</a>
+    <a class="dropdown-item" href="/in_progress_ticket_view/{{ ticket.id }}/">Assign Ticket to You</a>
+    <a class="dropdown-item" href="/completed_ticket_view/{{ ticket.id }}">Completed Ticket</a>
+    <a class="dropdown-item" href="/invalid_ticket_view/{{ ticket.id }}/">Invalid Ticket</a>
 
   </div>
 </div>
 
 <div>
     <h2>{{ ticket.title }}</h2>
-    <h3>Info:</h3>
-    <h4>Status: </h4>{{ ticket.status }}
-    <h4>Reported By: </h4>
+    <h3>Ticket Info:</h3>
+    <h4>Status: </h4> {{ ticket.ticket_status }}
+    <h4>Date Submitted:</h4> {{ ticket.filed_date }}
+    <h4>Description: </h4> {{ ticket.description }}
+    <h4>Reported By: </h4> <a href="/user_detail_view/{{ ticket.user_filed.id }}">{{ ticket.user_filed }}</a>
+    <h4>Assigned To: </h4> <a href="/user_detail_view/{{ ticket.user_assigned.id }}">{{ ticket.user_assigned }}</a>
+    <h4>Completed By: </h4> <a href="/user_detail_view/{{ ticket.user_completed.id }}">{{ ticket.user_completed }}</a>
+
 </div>
