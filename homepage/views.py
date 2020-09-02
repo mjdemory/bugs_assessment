@@ -13,11 +13,11 @@ from homepage.forms import TicketForm
 def index(request):
     html = "index.html"
     new_tickets = Ticket.objects.filter(ticket_status='N')
-    in_progress_tickets= Ticket.objects.filter(ticket_status='INP')
+    in_progress_tickets = Ticket.objects.filter(ticket_status='INP')
     completed_tickets = Ticket.objects.filter(ticket_status='D')
     invalid_tickets = Ticket.objects.filter(ticket_status='INV')
     return render(request, html, {'New': new_tickets, 'In_Progress': in_progress_tickets,
-    'Completed': completed_tickets, 'Invalid': invalid_tickets, "welcome_name": 'Box'})
+                                  'Completed': completed_tickets, 'Invalid': invalid_tickets, "welcome_name": 'Box'})
 
 
 def ticket_detail_view(request, ticket_id):
@@ -53,7 +53,6 @@ def ticket_edit_view(request, ticket_id):
             ticket.description = data["description"]
             ticket.title = data["title"]
             ticket.save()
-
             return HttpResponseRedirect(reverse('ticket_detail', args=[ticket.id]))
 
     data = {
